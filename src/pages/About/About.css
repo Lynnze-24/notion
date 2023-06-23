@@ -1,0 +1,12 @@
+.About{
+    padding-top: 3rem;
+
+}
+
+.list{
+    list-style-type: disc;
+    margin: 3rem auto;
+    max-width: 50rem;
+    font-size: 2rem;
+    line-height: 3.5rem;
+}

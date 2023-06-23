@@ -1,13 +1,86 @@
-body {
+/* reset css and utilities */
+*,
+*::after,
+*::before {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+*:focus {
+  outline: none;
 }
+
+:root {
+  font-size: 62.5%;
+  --cp: #b1a139;
+  --primary-color:var(--cp);
+  --lcp:#b1a139dc;
+  --cs: #f7f7f7;
+  --ct: #4c9ca1;
+  --cq: #0c0b0b;
+  --l1cq:#0c0b0bdf;
+  --l2cq:#0c0b0bb7;
+  --lcq: #1f1c1c77;
+  --dg: #d16145;
+  --ldg: #ffe7e6;
+  --dialog: #495057;
+  --border: #0000003B;
+  --success: #1ea97c;
+  --warning:#e39f17;
+  --info:#6366F1;
+  --purple:#A855F7;
+  --lsuccess: #e4f8f0;
+  --disabled: rgb(212, 212, 205);
+  
+}
+
+html {
+  width: 100%;
+  height: 100%;
+  scroll-behavior: smooth;
+  color: var(--cq);
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Roboto', sans-serif;
+}
+
+*::selection {
+  background-color: purple;
+  color: white;
+}
+
+input::placeholder {
+ user-select: none;
+}
+
+button {
+  outline: none;
+  border: none;
+  cursor: pointer;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+

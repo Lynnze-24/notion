@@ -1,0 +1,49 @@
+.listHead{
+    display: flex;
+    gap: 6rem;
+    justify-content: center;
+    align-items: center;
+    margin-top: 5rem;
+    font-size: 1.8rem;
+}
+
+.outerCon{
+    display: flex;
+    width: 20rem;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.outerCon h5{
+    text-shadow: 0.1rem 0.1rem 1rem rgba(255,255,255,0.6);
+    width: 15rem;
+    text-overflow: ellipsis;
+    overflow: hidden; 
+    white-space:nowrap;
+}
+
+.headControls{
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    font-size: 1.5rem;
+}
+
+.menu{
+    position: relative;
+    cursor: pointer;
+}
+
+.menu input{
+    position: absolute;
+    top: 0;
+    left: 0;
+    visibility: hidden;
+    appearance: none;
+    cursor: pointer;
+}
+
+.iconButton{
+    cursor: pointer;
+}

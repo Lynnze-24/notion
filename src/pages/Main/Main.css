@@ -1,0 +1,36 @@
+.Main{
+    padding-top: 3rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.MainHeader{
+    display: flex;
+    align-self: center;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.MainHeaderBtn{
+    border: 0.1rem solid white;
+    width: 3rem;
+    height: 3rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow:  0 0 0.2rem 0.1rem rgba(255,255,255,0.8);
+}
+
+.Main .noTaskGroup{
+    flex: 1;
+    display: grid;
+    place-items: center;
+}
+
+.Main h2{
+    font-size: 2rem;
+    text-align: center;
+}

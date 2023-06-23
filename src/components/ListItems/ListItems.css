@@ -1,0 +1,72 @@
+.itemListCon{
+    display: flex;
+    margin-top: 1rem;
+    gap: 6rem;
+    justify-content: center;
+}
+
+.singleListCon{
+    display: flex;
+    width: 20rem;
+    min-height: 70vh;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.singleItemCon{
+    position: relative;
+}
+
+.singleItemCon:hover .deleteBtn{
+    transform: scale(1);
+}
+
+.deleteBtn{
+    position: absolute;
+    top: 0.9rem;
+    transform: scale(0);
+    transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    font-size: 1.2rem;
+    border-radius: 50%;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    background-color: black;
+    right: 0.8rem;
+    cursor: pointer;
+}
+
+.singleItem{
+    display: flex;
+    font-size: 1.5rem;
+    width: 100%;
+    padding: 0.8rem;
+    border: 0.1rem solid white;
+    border-radius: 0.5rem;
+    line-height: 2rem;
+    cursor: pointer;
+    word-break: break-word;
+}
+
+
+
+
+.singleItem input{
+    background-color: transparent;
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    max-width: 100%;
+}
+
+.singleItem p{
+    width: 85%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
