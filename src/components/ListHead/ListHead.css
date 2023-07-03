@@ -1,11 +1,12 @@
 .listHead{
     display: flex;
     gap: 6rem;
-    justify-content: center;
     align-items: center;
     margin-top: 5rem;
     font-size: 1.8rem;
 }
+
+
 
 .outerCon{
     display: flex;
@@ -15,12 +16,22 @@
     cursor: pointer;
 }
 
-.outerCon h5{
+.outerCon input{
+    background-color: transparent;
     text-shadow: 0.1rem 0.1rem 1rem rgba(255,255,255,0.6);
     width: 15rem;
     text-overflow: ellipsis;
     overflow: hidden; 
     white-space:nowrap;
+    outline: none;
+    border: none;
+    --headTxtColor:'white';
+    color:var(--headTxtColor);
+    cursor: pointer;
+}
+
+.outerCon input:disabled{
+    background-color: transparent;
 }
 
 .headControls{
@@ -36,6 +47,7 @@
 }
 
 .menu input{
+    
     position: absolute;
     top: 0;
     left: 0;
@@ -46,4 +58,18 @@
 
 .iconButton{
     cursor: pointer;
+}
+
+.listHeadCon-item.dragOverCon{
+    background-color: var(--dragOverBg);
+    outline: 5px solid var(--dragOverBg);
+    
+}
+
+.listHeadCon-item.dragOverCon .outerCon input{
+    color: white;
+}
+
+.listHeadCon-item .hidden{
+    opacity: 0.4;
 }

@@ -1,0 +1,67 @@
+#contactForm{
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
+    flex-direction: column;
+    padding: 3rem;
+    gap: 2rem;
+    color: white;
+}
+
+#contactForm input,#contactForm textarea{
+    border: none;
+    outline: none;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+
+#contactForm textarea{
+    min-height: 10rem;
+}
+
+/* Change the white to any color */
+#contactForm input:-webkit-autofill,
+#contactForm input:-webkit-autofill:hover, 
+#contactForm input:-webkit-autofill:focus, 
+#contactForm input:-webkit-autofill:active{
+     -webkit-background-clip: text;
+    -webkit-text-fill-color: #ffffff;
+    transition: background-color 5000s ease-in-out 0s;
+    box-shadow: inset 0 0 20px 20px #23232329;
+    caret-color: white;
+}
+
+
+
+#contactForm input:focus,#contactForm textarea:focus{
+    background-color: transparent;
+    outline: none;
+}
+
+#contactForm button{
+    background-color: transparent;
+    border: 1px solid white;
+    border-radius: 0.5rem;
+    font-size: 1.8rem;
+    color: white;
+    padding: 1.5rem 0;
+    transition: all 0.2s ease-in-out;
+}
+
+#contactForm button:not(:disabled):hover{
+    background-color: white;
+    color: black;
+}
+
+#contactForm button:disabled{
+    opacity: 0.2;
+    pointer-events: none;
+    user-select: none;
+}
+
+#contactForm .fontawesome{
+    margin-left: 0.5rem;
+}

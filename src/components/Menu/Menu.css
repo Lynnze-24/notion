@@ -1,10 +1,19 @@
 .Menu{
     position: absolute;
-    background-color: white;
+  
     color: #323232;
     font-size: 1.2rem;
     display: flex;
+    font-weight: 600;
     flex-direction: column;
+    top: 100%;
+    left: 0;
+    border-radius: 0.5em;
+}
+
+.Menu.left{
+    left: unset;
+    right: 0;
 }
 
 .MenuItem{
@@ -12,12 +21,25 @@
     align-items: center;
     gap: 1rem;
     height: 3rem;
+    line-height: 3rem;
     padding: 0 1rem;
     z-index: 10;
+    background-color: white;
 }
 
+.MenuItem:first-of-type{
+    border-top-left-radius: 0.5em;
+    border-top-right-radius: 0.5em;
+}
+
+.MenuItem:last-of-type{
+    border-bottom-left-radius: 0.5em;
+    border-bottom-right-radius: 0.5em;
+}
+
+
 .MenuItem:hover{
-    backdrop-filter: invert(0.7);
+   background-color: var(--clr3);
     color: white;
 }
 

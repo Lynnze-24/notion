@@ -1,14 +1,61 @@
   @import url('https://fonts.googleapis.com/css2?family=Ysabeau+Office:wght@100;200;300;400;500;600;700;800;900&display=swap');
 
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus {
+  outline: none;
+}
+
+:root{
+    font-size: 62.5%;
+    --clr1:#f7f7f7;
+    --clr2:#28b671;
+    --clr3:#292929;
+    --clr4:rgba(33,42,53,0.9);
+     --bgColor:attr(data-color);
+     --dragOverBg:rgba(255,200,255,0.5);
+}
+
+html{
+    scroll-behavior: smooth;
+}
+
+
+body{
+    min-height: 100vh;
+    font:1.2rem 'Ysabeau Office', sans-serif;
+    color: white;
+}
+
+a{
+    text-decoration: none;
+    cursor: pointer;
+    color: white;
+}
+
+input{
+   font:1.2rem 'Ysabeau Office', sans-serif;
+}
+
+
+
+
+
 .App {
-  max-width: 140rem;
+  
   margin: 0 auto;
   width: 100%;
   height: 100%;
   min-height: 100vh;
   background-color: black;
-  color: white;
-  font-family: 'Ysabeau Office', sans-serif;
+
 }
 
 .App h1{
@@ -17,3 +64,4 @@
   letter-spacing: 0.2rem;
   
 }
+

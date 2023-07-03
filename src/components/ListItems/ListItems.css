@@ -2,13 +2,12 @@
     display: flex;
     margin-top: 1rem;
     gap: 6rem;
-    justify-content: center;
 }
 
 .singleListCon{
     display: flex;
     width: 20rem;
-    min-height: 70vh;
+    min-height: calc(100vh - 16rem);
     flex-direction: column;
     gap: 1rem;
 }
@@ -42,14 +41,23 @@
 .singleItem{
     display: flex;
     font-size: 1.5rem;
-    width: 100%;
+    width: 20rem;
     padding: 0.8rem;
     border: 0.1rem solid white;
     border-radius: 0.5rem;
-    line-height: 2rem;
     cursor: pointer;
     word-break: break-word;
 }
+
+.singleItemCon.dragOverCon,.singleListCon.dragOverCon{
+    background-color: var(--dragOverBg);
+    border-color: red;
+}
+
+.singleListCon.dragOverCon{
+    outline: 5px solid var(--dragOverBg);
+}
+
 
 
 
@@ -59,7 +67,9 @@
     color: white;
     border: none;
     outline: none;
-    font-size: 1.5rem;
+     font-size: 1.5rem;
+    font-weight: normal;
+    color: var(--clr1);
     line-height: 2rem;
     max-width: 100%;
 }
@@ -67,6 +77,19 @@
 .singleItem p{
     width: 85%;
     overflow: hidden;
+    font-size: 1.5rem;
+    line-height: normal;
     text-overflow: ellipsis;
     white-space: nowrap;
+}
+
+
+
+.singleItem.hidden{
+    opacity: 0.15;
+    border-style: dotted;
+}
+
+.singleItemCon:hover .singleItem.hidden + .deleteBtn{
+   transform: scale(0);
 }

@@ -1,0 +1,25 @@
+.messageAlert{
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    width: max-content;
+    height: max-content;
+    margin-top: 1rem;
+    padding: 1rem 1.5rem;
+    font-size: 1.8rem;
+    border-radius: 0.5rem;
+}
+
+.messageAlert.success{
+background-color: rgb(104, 159, 58);
+}
+
+.messageAlert.error{
+background-color: rgb(223, 65, 65);
+}
+
+.messageAlert .fontawesome{
+    margin-right: 1rem;
+    position: relative;
+    top: 0.1rem;
+}

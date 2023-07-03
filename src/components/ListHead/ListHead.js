@@ -5,6 +5,8 @@ import exchangeArrItem from '../../utils/exchangeArrItem'
 import uniqueId from '../../utils/uniqueId'
 import Menu from '../Menu/Menu'
 import './ListHead.css'
+import DragOverWrap from '../DragOverWrap/DragOverWrap'
+import { useDragContext } from '../../store/context/DragProvider'
 
 
 
@@ -14,19 +16,22 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
     const createNewItem = ()=> {
        
         setItemList((x)=> {
-            let y = [...x]
-            y[index] = [...y[index],{id:uniqueId('item'),
-        title:null,editMode:true}]
+            let y = {...x}
+            y[item.id] = [...y[item.id],{id:uniqueId('item'),
+        title:'',editMode:true}]
             return y;
         })
     }
 
     const menuRef = useRef()
-    const iconBtnRef = useRef()
-    const oldTitleRef = useRef()
+    const iconBtnRef = useRef();
+    const titleRef = useRef()
+
+    
+   
 
     const [menuVisible, setMenuVisible] = useState(false)
-    const [oldTitle, setOldTitle] = useState(false)
+    const [title, setTitle] = useState(item.title)
 
     const menuToggle = (e)=> {
         setMenuVisible(x => !x);
@@ -37,13 +42,6 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
         }
         
     }
-    const titleRef = useRef()
-    useEffect(()=>{
-        if(item.editMode){
-           setOldTitle(titleRef.current.innerText);
-            titleRef.current.focus()
-        }
-    },[item.editMode])
 
     useEffect(() => {
         window.addEventListener('click',menuHide)
@@ -51,59 +49,51 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
             window.removeEventListener('click',menuHide)
         }
     }, [])
+    
+    useEffect(() => {
+        if(item.editMode)titleRef.current.focus()
+    }, [item.editMode])
+    
 
-    const saveHeader = (save = true)=> {
-        if(titleRef.current.innerText===''){
-            if(oldTitleRef.current===''){
-                setHeadList((x)=> {
-                    let y = [...x]
-                    y = y.filter((z,i) => i!== index)
-                    return y;
-                })
-                setItemList( x => {
-                    let y = [...x]
-                    y = y.filter((z,i) => i!== index)
-                    return y;
-                })
-            }else{
-               
-                setHeadList((x)=> {
-                    let y = [...x]
-                    y[index].editMode = false;
-                    y[index].title = oldTitle
-                    console.log(y)
-                    return y;
-                })
-            }
-            return;
-        }
-        setHeadList((x)=> {
-            let y = [...x]
-            y[index].editMode = false;
-            if(save)y[index].title = titleRef.current.innerText;
-            return y;
-        })
-    }
-
-    const keyUpHandler =(e)=>{
-        if(e.code === 'Enter') saveHeader()
-        if(e.code === 'Escape') saveHeader(false)
-    }
     
 
     const deleteList = ()=>{
         console.log('delete list')
         setItemList((x)=> {
-            let y = [...x]
-            y = y.filter( z=> z!== y[index])
+            let y = {...x}
+            delete y[item.id]
             return y
         })
         setHeadList((x)=> {
             let y = [...x]
-            y = y.filter( z=> z!== y[index])
+            y = y.filter( z=> z.id!== item.id)
             return y
         })
     }
+
+    const saveHeader = (save = true)=> {
+        
+        if(title==='' || (!save && item.title==='') ){
+            return deleteList();
+        }
+        let changedTitle = save?title:item.title;
+        setTitle(changedTitle)
+        setHeadList((x)=> {
+            let y = [...x]
+            y[index].editMode = false;
+            y[index].title = changedTitle
+            return y;
+        })
+    }
+
+    const keyUpHandler =(e)=>{
+        e.preventDefault();
+        if(e.code === 'Enter') saveHeader()
+        if(e.code === 'Escape') saveHeader(false)
+    }
+    
+
+    
     const editListHeader = ()=>{
         setHeadList((x)=> {
             let y = [...x]
@@ -131,28 +121,32 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
 
     const menuList=[
         {
-            label:'delete',
-            icon:faTrash,
-            action:deleteList
+            label:'Rename',
+            icon:faEdit,
+            action:editListHeader
         },
         {
-            label:'color',
+            label:'Color',
             icon:faCircle,
             action:changeColor
         },
         {
-            label:'edit',
-            icon:faEdit,
-            action:editListHeader
-        }
+            label:'Delete',
+            icon:faTrash,
+            action:deleteList
+        },
     ]
 
-    return(
-        <div data-index={index} onDrop={(e)=> drop(e)} onDragOver={(e)=> e.preventDefault()}
-            onDragEnter={(e)=> e.preventDefault()}>
+     const handleDragEnd = (e )=> {
+        e.preventDefault()
+        e.target.classList.remove('hidden')
+    }
 
-        <div data-index={index} draggable={true} onDragStart={(e)=> drag(e)} className='outerCon'>
-            <h5 onKeyUp={keyUpHandler} onBlur={saveHeader} contentEditable={item.editMode} ref={titleRef} style={{color:item.color}} >{item.title}</h5>
+    return(
+        <DragOverWrap etype='head' className='listHeadCon-item'  data-index={index} drop={drop}>
+
+        <div data-index={index} draggable={true} onDragEnd={handleDragEnd} onDragStart={(e)=> drag(e)} className='outerCon'>
+            <input style={{'--headTxtColor':item.color}} ref={titleRef} disabled={!item.editMode} onChange={(e)=> setTitle(e.target.value)} value={title} onKeyUp={keyUpHandler} onBlur={saveHeader}    />
             <div className='headControls' >
                  <div ref={iconBtnRef}  onClick={menuToggle} className='menu'>
                     <FontAwesomeIcon className='iconButton' icon={faEllipsisH} />  
@@ -163,33 +157,34 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
                  <FontAwesomeIcon className='iconButton' onClick={createNewItem} icon={faPlus} />
             </div>
         </div>
-        </div>
+        </DragOverWrap>
     )
 }
 
 const ListHead = ({list,setItemList,setHeadList}) => {
 
-    const drag =(e) => {
-        
+    const {setDragType} = useDragContext()
+
+     const dragHead =(e) => {
         let data = e.target.getAttribute('data-index');
         e.dataTransfer.setData("idx", data);
         e.dataTransfer.setData("etype",'head');
+        setDragType('head')
+        e.target.classList.add('hidden')
     }
 
     
 
-    const drop =(e) => {
+    const dropHead =(e) => {
         e.preventDefault()
         let etype = e.dataTransfer.getData("etype");
         if(etype !== 'head') return;
         let dropIdx = e.currentTarget.getAttribute('data-index');
         let dragIdx = e.dataTransfer.getData("idx");
-        console.log('drag and drop',dragIdx,dropIdx)
-        setHeadList(x => exchangeArrItem(dropIdx,dragIdx,x));
-        setItemList(x => exchangeArrItem(dropIdx,dragIdx,x));
+        setHeadList((prev)=> exchangeArrItem(dragIdx,dropIdx,prev))
+        setDragType('')
+        e.target.classList.remove('hidden')
     }
-
-
 
 
     return (
@@ -197,14 +192,13 @@ const ListHead = ({list,setItemList,setHeadList}) => {
             {list.map((item,index) => 
             
             (<ListHeadItem 
-              
+             index={index} 
             key={item.id} 
             setItemList={setItemList} 
             setHeadList={setHeadList}
-            index={index} 
             item={item} 
-            drag={drag} 
-            drop={drop} 
+            drag={dragHead} 
+            drop={dropHead} 
             />))}
         </div>
     )

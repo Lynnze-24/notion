@@ -12,10 +12,9 @@ const MenuItem =({item})=>{
     )
 }
 
-const Menu = forwardRef(({menuList,onClick},ref) => {
+const Menu = forwardRef(({menuList,onClick,isLeft=false},ref) => {
     return (
-        <div ref={ref} onClick={onClick}  className='Menu' style={{top: '100%',
-                                                        left: 0}}>
+        <div ref={ref} onClick={onClick}  className={`Menu ${isLeft?'left':''}`} >
             {menuList.map((menu,index) => <MenuItem key={index} item={menu} />)}
         </div>
     )

@@ -1,0 +1,104 @@
+.mainLayout{
+    min-height: 100vh;
+}
+
+.sideMenu{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: max-content;
+    min-width: 30rem;
+    height: 100%;
+    z-index: 1000;
+    transform: translateX(-100%);
+    background:linear-gradient(to bottom,rgb(252, 137, 48),rgb(251, 80, 80));
+    transition: all 0.3s ease-in-out;
+}
+
+.sideMenu.navOpen{
+    transform: translateX(0);
+}
+
+.sideHamBurger{
+    position: absolute;
+    top: 0;
+    left: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    margin-top: 1rem;
+    margin-left: 1rem;
+}
+
+.sideContainer{
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+
+.sideUser{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    padding: 5rem 0;
+    gap: 0.5rem;
+}
+
+.sideUser p{
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.sideUserImg{
+    width: 30%;
+    border-radius: 50%;
+    padding: 0.25rem;
+    background:linear-gradient(to top,rgba(252, 136, 48, 0.484),rgba(217, 80, 251, 0.373));
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sideUser img{
+    width: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.sideLinks{
+    display: flex;
+    flex-direction: column;
+}
+
+.sideLinks li{
+    width: 100%;
+    text-align: center;
+    font-size: 1.5rem;
+    padding:1.5rem 0;
+    cursor: pointer;
+}
+
+.sideLinks li:not(.active):hover{
+    background-color: rgba(0,0,0,0.2);
+}
+
+.sideLinks li.active{
+     background-color: rgba(233, 230, 230, 0.347);
+}
+    
+.sideLogo{
+    margin-top: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 5rem;
+}
+
+.sideLogo img{
+    width: 50%;
+}
