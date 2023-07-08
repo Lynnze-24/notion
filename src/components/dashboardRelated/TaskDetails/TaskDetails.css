@@ -1,0 +1,13 @@
+.TaskDetailsCon{
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 60rem;
+    height: 100%;
+    background-color: rgb(6, 12, 12);
+    transition: all 0.3s ease-in-out;
+}
+
+.TaskDetailsCon.hiddenRight{
+    transform: translateX(100%)
+}

@@ -40,7 +40,7 @@ export default function SideMenu() {
                 <li className={location?.pathname ==='/dashboard'?'active':''} >Dashboard</li>
                 </Link>
                 <Link to='controls'>
-                <li className={location?.pathname ==='/controls'?'active':''} >Controls</li>
+                <li className={location?.pathname ==='/dashboard/controls'?'active':''} >Controls</li>
                 </Link>
                 <li  onClick={signOutHandler}>Log out</li>
             </ul>

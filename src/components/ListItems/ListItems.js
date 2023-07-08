@@ -7,7 +7,7 @@ import { useState } from 'react'
 import { useDragContext } from '../../store/context/DragProvider'
 import DragOverWrap from '../DragOverWrap/DragOverWrap'
 
-const SingleItem=({item,setItemList,listId,index,drag,drop})=>{
+const SingleItem=({item,setItemList,listId,index,drag,drop,setSaving,setDetailState})=>{
 
     const ref = useRef()
     const [title, setTitle] = useState(item.title || '')
@@ -25,6 +25,7 @@ const SingleItem=({item,setItemList,listId,index,drag,drop})=>{
                 (z) => z.id !== item.id)
             return y;
         })
+        setSaving(true)
     }
 
     const saveItem = (save = true)=> {
@@ -47,6 +48,7 @@ const SingleItem=({item,setItemList,listId,index,drag,drop})=>{
             )
             return y;
         })
+        if(save)setSaving(true)
     }
 
     const editItem = ()=>{
@@ -63,6 +65,7 @@ const SingleItem=({item,setItemList,listId,index,drag,drop})=>{
             )
             return y;
         })
+        setSaving(true)
     }
 
       const handleDragEnd = (e )=> {
@@ -73,7 +76,7 @@ const SingleItem=({item,setItemList,listId,index,drag,drop})=>{
 
     return(
 
-        <DragOverWrap  etype='item' className='singleItemCon'  data-index={index} 
+        <DragOverWrap onClick={()=>setDetailState({open:true,id:item.id })} etype='item' className='singleItemCon'  data-index={index} 
         data-headid={listId} drop={drop}>
         
         <div data-index={index} 
@@ -99,7 +102,7 @@ const SingleItem=({item,setItemList,listId,index,drag,drop})=>{
     )
 }
 
-const ListItem = ({list,setItemList,listId}) => {
+const ListItem = ({list,setItemList,listId,setSaving,setDetailState}) => {
 
     const {setDragType} = useDragContext()
 
@@ -154,6 +157,7 @@ const ListItem = ({list,setItemList,listId}) => {
         setItemList(newArr);
         setDragType('')
         e.target.classList.remove('hidden')
+        setSaving(true)
     }
 
    
@@ -161,12 +165,14 @@ const ListItem = ({list,setItemList,listId}) => {
     const renderList = list[listId];
 
     return(
-         <DragOverWrap drop={drop}  etype='item' className='singleListCon'   data-headid={listId}
+         <DragOverWrap  drop={drop}  etype='item' className='singleListCon'   data-headid={listId}
              data-index={'container'}   >
             {
             renderList.map((item,index)=> (item && <SingleItem 
+                                        setDetailState={setDetailState}
                                         drag={drag}
                                         drop={drop}
+                                        setSaving={setSaving}
                                         key={item.id} 
                                         index={index} 
                                         listId={listId} 
@@ -177,10 +183,10 @@ const ListItem = ({list,setItemList,listId}) => {
     )
 }
 
-const ListItems = ({list,setItemList,headList}) => {
+const ListItems = ({list,setItemList,headList,setSaving,setDetailState}) => {
     return (
         <div className='itemListCon' >
-            {headList.map((item,index)=>(<ListItem setItemList={setItemList} key={item.id} list={list} listId={item.id} />))}
+            {headList.map((item,index)=>(<ListItem setDetailState={setDetailState} setSaving={setSaving} setItemList={setItemList} key={item.id} list={list} listId={item.id} />))}
         </div>
     )
 }

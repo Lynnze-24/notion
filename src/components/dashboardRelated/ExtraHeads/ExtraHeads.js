@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import './ExtraHeads.css'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircle, faEdit, faEllipsisVertical, faListDots, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -9,11 +9,12 @@ import Menu from '../../Menu/Menu'
 import exchangeArrItem from '../../../utils/exchangeArrItem'
 import DragOverWrap from '../../DragOverWrap/DragOverWrap'
 import { useDragContext } from '../../../store/context/DragProvider'
+import { SketchPicker } from 'react-color'
 
 
 
 
-const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
+const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList,setSaving}) => {
       
      const menuRef = useRef()
      const iconBtnRef = useRef();
@@ -23,26 +24,42 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
 
      const [menuVisible, setMenuVisible] = useState(false)
      const [title, setTitle] = useState(item.title || '')
+     const [isColorPickerVisible, setIsColorPickerVisible] = useState(false)
+    const [currentColor, setCurrentColor] = useState(item.color)
 
-      const {setDragType,setDragItem,dragItem} = useDragContext()
-   
+      const {setDragType} = useDragContext()
+    
+
+    const saveColor = useCallback(()=> {
+        setHeadList((x)=> {
+                let y = [...x]
+                y[index].color = currentColor; 
+                return y;
+             })
+         setIsColorPickerVisible(false)
+         setSaving(true)
+    },[currentColor])
 
     const menuToggle = (e)=> {
         setMenuVisible(x => !x);
     }
-    const menuHide = (e)=> {
+    const menuHide = useCallback((e)=> {
         if(!(iconBtnRef?.current?.contains(e.target) || menuRef?.current?.contains(e.target))){
             setMenuVisible(false)
         }
         
-    }
+       if(isColorPickerVisible && (colorRef?.current?.contains(e.target)) === false){
+            saveColor()
+        }
+       
+    },[isColorPickerVisible,saveColor])
 
     useEffect(() => {
         window.addEventListener('click',menuHide)
         return () => {
             window.removeEventListener('click',menuHide)
         }
-    }, [])
+    }, [menuHide])
 
     useEffect(() => {
         if(item.editMode)titleRef.current.focus()
@@ -51,8 +68,8 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
      const deleteList = ()=>{
         console.log('delete list')
         setItemList((x)=> {
-            let y = [...x]
-            y = y.filter( z=> z!== y[index])
+            let y = {...x}
+            delete y[item.id]
             return y
         })
         setHeadList((x)=> {
@@ -60,6 +77,7 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
             y = y.filter( z=> z!== y[index])
             return y
         })
+        setSaving(true)
     }
 
      const editListHeader = ()=>{
@@ -68,22 +86,21 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
             y[index].editMode = true; 
             return y;
         })
+        setSaving(true)
     }
 
-    const changeColor = () => {
+    const changeColor = (e) => {
+        e.stopPropagation()
         setMenuVisible(false)
-        colorRef.current.click()
-       
+        setIsColorPickerVisible(true)
     }
 
-    const saveColor = ()=> {
-        setHeadList((x)=> {
-            let y = [...x]
-            y[index].color = colorRef.current.value; 
-            return y;
-        })
+    const changeLocalColor = (color)=> {
        
+        setCurrentColor(color.hex)
+        //  console.log('changing color',color)
     }
+
         
     const menuList=[
         
@@ -118,6 +135,7 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
             y[index].title = changedTitle
             return y;
         })
+        if(save)setSaving(true)
     }
 
     const keyUpHandler =(e)=>{
@@ -147,6 +165,7 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
             setItemList(y)  
         }
         setDragType('')
+        setSaving(true)
     }
 
      const drag =(e) => {
@@ -166,12 +185,17 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
 
 
     return(<DragOverWrap etype='all' data-headid={item.id} data-index={index} drop={drop}>
-            <div  data-index={index} draggable={true} onDragEnd={handleDragEnd} onDragStart={(e)=> drag(e)}  style={{'--bgColor':item.color}} 
+            <div  data-index={index} draggable={true} onDragEnd={handleDragEnd} onDragStart={(e)=> drag(e)}  style={{'--bgColor':currentColor}} 
             className={`extraList-item`}>
                              <input ref={titleRef} onKeyUp={keyUpHandler} onBlur={saveHeader}  value={title} onChange={(e)=> setTitle(e.target.value)} disabled={!item.editMode} />
-                             <div ref={iconBtnRef}  onClick={menuToggle} className='menu' >
+                             <div draggable={true} onDragStart={(e)=> {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    }} ref={iconBtnRef}  onClick={menuToggle} className='menu' >
                                 <FontAwesomeIcon className='extraHeads-item_menu' icon={faEllipsisVertical} />  
-                                <input onChange={saveColor} ref={colorRef} type='color'  />
+                                {isColorPickerVisible && (<div onClick={(e)=>e.stopPropagation()} ref={colorRef} className='colorPicker'>
+                                <SketchPicker    color={currentColor} onChange={changeLocalColor} />
+                                </div>)}
                                 {menuVisible && <Menu isLeft={true} ref={menuRef} menuList={menuList} onClick={menuHide} />}
                             </div>
                             
@@ -181,7 +205,7 @@ const ExtraHeadItem = ({item,index,setHeadList,setItemList,itemList}) => {
 
 
 
-export default function ExtraHeads({list=[],preset=3,setHeadList,setItemList,createNewGroup,itemList}) {
+export default function ExtraHeads({list=[],preset=3,setHeadList,setItemList,createNewGroup,itemList,setSaving}) {
 
   return (list.length > 0) ? (
     <div  className='extraHeads'>
@@ -190,7 +214,7 @@ export default function ExtraHeads({list=[],preset=3,setHeadList,setItemList,cre
                      <FontAwesomeIcon onClick={createNewGroup} className='extraHeads-head_btn' icon={faPlus} />
                 </div>
                 <div className='extraList'>
-                    {list.map((l,i) => (<ExtraHeadItem itemList={itemList} setHeadList={setHeadList} setItemList={setItemList} index={i+preset} key={l.id} item={l} />))}
+                    {list.map((l,i) => (<ExtraHeadItem setSaving={setSaving} itemList={itemList} setHeadList={setHeadList} setItemList={setItemList} index={i+preset} key={l.id} item={l} />))}
                 </div>
     </div>  
   ): (<div  className='extraHeads'>

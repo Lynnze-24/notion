@@ -73,3 +73,13 @@
 .listHeadCon-item .hidden{
     opacity: 0.4;
 }
+
+.colorPicker{
+    position: absolute;
+    top: 0;
+    left: 0;
+    appearance: none;
+    cursor: pointer;
+    background-color: black;
+    z-index: 10;
+}

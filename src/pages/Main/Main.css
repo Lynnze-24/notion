@@ -12,6 +12,10 @@
     gap: 1.5rem;
 }
 
+.MainHeader h1{
+   text-transform: capitalize;
+}
+
 .MainHeaderBtn{
     border: 0.1rem solid white;
     width: 3rem;
@@ -62,4 +66,11 @@
 
 .headAndListContent{
     width: max-content;
+}
+
+.pageSave{
+    position: absolute;
+    right: 5rem;
+    top: 4.2rem;
+    font-size: 1.5rem;
 }

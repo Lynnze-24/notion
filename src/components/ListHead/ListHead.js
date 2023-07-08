@@ -1,17 +1,18 @@
 import { faCircle, faEdit, faEllipsisH, faPlus, faTrash} from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import exchangeArrItem from '../../utils/exchangeArrItem'
 import uniqueId from '../../utils/uniqueId'
 import Menu from '../Menu/Menu'
 import './ListHead.css'
 import DragOverWrap from '../DragOverWrap/DragOverWrap'
 import { useDragContext } from '../../store/context/DragProvider'
+import { SketchPicker } from 'react-color';
 
 
 
 
-const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
+const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList,setSaving})=> {
 
     const createNewItem = ()=> {
        
@@ -21,34 +22,52 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
         title:'',editMode:true}]
             return y;
         })
+       
     }
 
     const menuRef = useRef()
     const iconBtnRef = useRef();
     const titleRef = useRef()
-
-    
+    const colorRef = useRef()
    
-
+    
     const [menuVisible, setMenuVisible] = useState(false)
     const [title, setTitle] = useState(item.title)
+    const [isColorPickerVisible, setIsColorPickerVisible] = useState(false)
+    const [currentColor, setCurrentColor] = useState(item.color)
 
     const menuToggle = (e)=> {
         setMenuVisible(x => !x);
     }
-    const menuHide = (e)=> {
+
+    const saveColor = useCallback(()=> {
+        setHeadList((x)=> {
+                let y = [...x]
+                y[index].color = currentColor; 
+                return y;
+             })
+         setIsColorPickerVisible(false)
+         setSaving(true)
+    },[currentColor])
+
+
+    const menuHide = useCallback((e)=> {
         if(!(iconBtnRef?.current?.contains(e.target) || menuRef?.current?.contains(e.target))){
             setMenuVisible(false)
         }
         
-    }
+       if(isColorPickerVisible && (colorRef?.current?.contains(e.target)) === false){
+            saveColor()
+        }
+       
+    },[isColorPickerVisible,saveColor])
 
     useEffect(() => {
         window.addEventListener('click',menuHide)
         return () => {
             window.removeEventListener('click',menuHide)
         }
-    }, [])
+    }, [menuHide])
     
     useEffect(() => {
         if(item.editMode)titleRef.current.focus()
@@ -69,6 +88,7 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
             y = y.filter( z=> z.id!== item.id)
             return y
         })
+         setSaving(true)
     }
 
     const saveHeader = (save = true)=> {
@@ -84,6 +104,7 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
             y[index].title = changedTitle
             return y;
         })
+        if(save) setSaving(true)
     }
 
     const keyUpHandler =(e)=>{
@@ -100,24 +121,26 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
             y[index].editMode = true; 
             return y;
         })
+         setSaving(true)
     }
 
-    const colorRef = useRef()
+    
 
-    const changeColor = () => {
+    const changeColor = (e) => {
+        e.stopPropagation()
         setMenuVisible(false)
-        colorRef.current.click()
-       
+        setIsColorPickerVisible(true)
     }
 
-    const saveColor = ()=> {
-        setHeadList((x)=> {
-            let y = [...x]
-            y[index].color = colorRef.current.value; 
-            return y;
-        })
+   
+
+    const changeLocalColor = (color)=> {
        
+        setCurrentColor(color.hex)
+         console.log('changing color',color)
     }
+
+    
 
     const menuList=[
         {
@@ -146,12 +169,17 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
         <DragOverWrap etype='head' className='listHeadCon-item'  data-index={index} drop={drop}>
 
         <div data-index={index} draggable={true} onDragEnd={handleDragEnd} onDragStart={(e)=> drag(e)} className='outerCon'>
-            <input style={{'--headTxtColor':item.color}} ref={titleRef} disabled={!item.editMode} onChange={(e)=> setTitle(e.target.value)} value={title} onKeyUp={keyUpHandler} onBlur={saveHeader}    />
+            <input style={{'--headTxtColor':currentColor}} ref={titleRef} disabled={!item.editMode} onChange={(e)=> setTitle(e.target.value)} value={title} onKeyUp={keyUpHandler} onBlur={saveHeader}    />
             <div className='headControls' >
-                 <div ref={iconBtnRef}  onClick={menuToggle} className='menu'>
+                 <div draggable={true} onDragStart={(e)=> {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    }} ref={iconBtnRef}  onClick={menuToggle} className='menu'>
                     <FontAwesomeIcon className='iconButton' icon={faEllipsisH} />  
-                    <input onChange={saveColor} ref={colorRef} type='color'  />
-                   {menuVisible && <Menu ref={menuRef} menuList={menuList} onClick={menuHide} />}
+                    {isColorPickerVisible && (<div ref={colorRef} className='colorPicker'>
+                        <SketchPicker    color={currentColor} onChange={changeLocalColor} />
+                        </div>)}
+                   {(menuVisible && !isColorPickerVisible) && <Menu ref={menuRef} menuList={menuList} onClick={menuHide} />}
                  </div>
                 
                  <FontAwesomeIcon className='iconButton' onClick={createNewItem} icon={faPlus} />
@@ -161,7 +189,7 @@ const ListHeadItem = ({item,drag,drop,index,setItemList,setHeadList})=> {
     )
 }
 
-const ListHead = ({list,setItemList,setHeadList}) => {
+const ListHead = ({list,setItemList,setHeadList,setSaving}) => {
 
     const {setDragType} = useDragContext()
 
@@ -184,6 +212,7 @@ const ListHead = ({list,setItemList,setHeadList}) => {
         setHeadList((prev)=> exchangeArrItem(dragIdx,dropIdx,prev))
         setDragType('')
         e.target.classList.remove('hidden')
+        setSaving(true)
     }
 
 
@@ -192,6 +221,7 @@ const ListHead = ({list,setItemList,setHeadList}) => {
             {list.map((item,index) => 
             
             (<ListHeadItem 
+                setSaving={setSaving}
              index={index} 
             key={item.id} 
             setItemList={setItemList} 

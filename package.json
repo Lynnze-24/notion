@@ -12,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "firebase": "^9.14.0",
     "react": "^18.2.0",
+    "react-color": "^2.19.3",
     "react-dom": "^18.2.0",
     "react-redux": "^8.1.1",
     "react-router-dom": "^6.4.4",
@@ -22,7 +23,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "react-scripts build && firebase deploy"
   },
   "eslintConfig": {
     "extends": [

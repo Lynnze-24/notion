@@ -6,12 +6,14 @@ import { GoogleAuthProvider, getAuth, getRedirectResult, onAuthStateChanged } fr
 import {db } from "../firebase";
 import {  useDispatch, useSelector } from 'react-redux'
 import { emptyUser, setUser } from '../store/reducers/user/user';
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner } from "@fortawesome/free-solid-svg-icons";
+
+import uniqueId from "../utils/uniqueId";
+import { dummyTask } from "../dummyTask";
+import LoadingGeneral from "./loading/LoadingGeneral";
 
 export default function AuthHandler() {
   
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
   const navigate = useNavigate();
    const dispatch = useDispatch()
     const auth = getAuth();
@@ -28,8 +30,14 @@ export default function AuthHandler() {
           photoUrl:user?.photoURL
         }
         localStorage.setItem('userValidTime',user?.stsTokenManager?.expirationTime)
+
+        let pageId1 = "page12345";
+        let pageId2 = "page678910";
         
         let docRef = doc(db,"users",user?.uid)
+        let pageRef1 = doc(db,"users",user?.uid,"pages",pageId1)
+        let pageRef2 = doc(db,"users",user?.uid,"pages",pageId2)
+        
          const docu = await getDoc(docRef);
           if (docu.exists()) {
             console.log("Document exists");
@@ -37,19 +45,60 @@ export default function AuthHandler() {
             console.log("Document does not exist");
             await setDoc(docRef,{
               ...userData,
+              pages:[
+                {
+                id:pageId1,
+                name:'task'
+              },
+              {
+                id:pageId2,
+                name:'test'
+              },
+            ]
             })
+
+            await setDoc(pageRef1,
+                {
+                  name:'tasks',
+                  details:dummyTask,
+                  updatedAt:Date.now()
+                })
+
+           await setDoc(pageRef2,
+                {
+                  name:'test',
+                  details:[{
+                    id:'head10',
+                    title:'To do',
+                    color:'red',
+                    editMode:false,
+                    tasks:[
+                    { 
+                      id:uniqueId('task'),
+                      title:'take a bath',
+                      editMode:false,
+                    }, 
+                  ],
+                  },],
+                  updatedAt:Date.now()
+                }
+               )
+           
+            
+            
+
           }
            dispatch(setUser(userData))
            console.log('sign in',location)
            navigate('/dashboard')
-            if(isLoading) setIsLoading(false)
+            if(loading) setLoading(false)
       } else {
         // User is signed out.
          dispatch(emptyUser())
         localStorage.removeItem('userValidTime')
         console.log('sign out',location)
           navigate('/home')
-          if(isLoading) setIsLoading(false)
+          if(loading) setLoading(false)
       }
     },(e)=> console.log(e))
     
@@ -61,18 +110,5 @@ export default function AuthHandler() {
 
   
 
-  return  isLoading?(<div style={{position:'fixed',
-  top:0,
-  left:0,
-  width:'100%',
-  height:'100%',
-  background:'black',
-  color:'white',
-  display:'flex',
-  justifyContent:'center',
-  alignItems:'center',
-  zIndex:2000,
-  fontSize:'3em'
-
-}} >Loading <FontAwesomeIcon spinPulse icon={faSpinner} style={{marginLeft:'1rem',marginTop:'0.5rem'}}  /></div>):(<></>) ; // or you can return a loading indicator or any other appropriate component
+  return  loading?(<LoadingGeneral />):(<></>) ; // or you can return a loading indicator or any other appropriate component
 }
